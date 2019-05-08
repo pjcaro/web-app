@@ -1,0 +1,107 @@
+<h1>Welcome</h1>
+<%= form_tag(root_path, method: :get) do %>
+  <%= text_field_tag :query, params[:query] %>
+  <%= submit_tag 'Search' %>
+<% end %>
+<p></p>
+
+<% if @original.any? %>
+  <div style="display: flex; flex: 1">
+    <div id="visualization" style="display: flex; flex: 1"></div>
+
+    <div style="display: flex; flex: 1">
+      <table style="width:100%">
+        <tr>
+          <th>Region</th>
+          <th>Quantity</th> 
+        </tr>
+        <% @original.each do |value| %>
+          <% unless value[0] === "Country" %>
+            <tr>
+              <td><%= value[0] %></td>
+              <td><%= value[1] %></td> 
+            </tr>
+          <% end %>
+        <% end %>
+      </table>
+    </div>
+  </div>
+<% end %>
+  <div style="display: flex; flex: 1">
+    <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+
+  </div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      console.log(gon.countries);
+        google.load('visualization', '1', {packages: ['geochart']});
+
+    var width, height, selectedRegion, resolution;
+
+  
+      width = 556;
+      height = 400;
+      selectedRegion = 'world';
+      resolution = 'subcontinents';
+  
+
+    function drawVisualization() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Region');
+      data.addColumn('number', 'Value');
+      data.addRows(gon.regions);
+
+      var options = {
+        displayMode: 'regions',
+        enableRegionInteractivity: 'true',
+        resolution: resolution,
+        region: selectedRegion,
+        height: height,
+        width: width
+      };
+
+      var geochart = new google.visualization.GeoChart(
+          document.getElementById('visualization'));
+
+      google.visualization.events.addListener(geochart, 'select', function() {
+        var selection = geochart.getSelection();
+				console.log(selection);
+        if (selection.length == 1) {
+          var selectedRow = selection[0].row;
+          selectedRegion = data.getValue(selectedRow, 0);
+          resolution = "countries";
+          options.region = selectedRegion;
+          options.resolution = resolution;
+          //alert(resolution);
+          var data2 = google.visualization.arrayToDataTable(gon.countries);
+          geochart.draw(data2, options);
+          }
+      });
+
+      geochart.draw(data, options);
+    }
+    
+    google.setOnLoadCallback(drawVisualization);
+    
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable(
+      gon.contributors
+    );
+
+      var view = new google.visualization.DataView(data);
+
+
+      var options = {
+        width: 1000,
+        height: 600,
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '75%' },
+        isStacked: true,
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+    }
+    </script>
