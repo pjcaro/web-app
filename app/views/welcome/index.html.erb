@@ -2,6 +2,10 @@
 <%= form_tag(root_path, method: :get) do %>
   <%= text_field_tag :query, params[:query] %>
   <%= submit_tag 'Search' %>
+  <% if @total && params[:query] %>
+    <%= @total %> results
+  <% end %>
+  
 <% end %>
 <p></p>
 

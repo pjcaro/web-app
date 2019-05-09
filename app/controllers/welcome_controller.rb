@@ -1,7 +1,9 @@
 class WelcomeController < ApplicationController
   def index
     query = params[:query] || ""
-    @news = New.search(query).response["aggregations"]["news"]["buckets"]
+    response = New.search(query).response
+    @total = response['hits']['total']['value']
+    @news = response["aggregations"]["news"]["buckets"]
     @day_news = New.search_contributors(query).response["aggregations"]
     @contributors = @day_news['uniq_contributors']['buckets'].sort_by{ |con| con['key'] }.map { |cont| cont['key']}
     @contributors_pie = @day_news['uniq_contributors']['buckets'].sort_by{ |con| con['key'] }.map{ |cont| [cont['key'], cont['doc_count']]}
