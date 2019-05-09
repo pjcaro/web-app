@@ -1,6 +1,9 @@
 set :application, "webapp"
 set :repo_url, "git@github.com:pjcaro/web-app.git"
 
+set :rbenv_type, :user
+set :rbenv_ruby, '2.5.1'
+
 # Deploy to the user's home directory
 set :deploy_to, "/home/deploy/#{fetch :application}"
 
