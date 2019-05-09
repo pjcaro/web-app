@@ -1,7 +1,7 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.11.0"
 
-set :application, "web-app"
+set :application, "webapp"
 set :repo_url, "git@github.com:pjcaro/web-app.git"
 
 # Archivos y directorios
