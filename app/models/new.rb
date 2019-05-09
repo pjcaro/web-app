@@ -2,7 +2,7 @@ class New < ActiveRecord::Base
   include Elasticsearch::Model
   include Elasticsearch::Model::Callbacks
 
-  index_name "test"
+  index_name "test_2"
 
   def self.search(query="")
     __elasticsearch__.search(
