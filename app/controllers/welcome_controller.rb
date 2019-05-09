@@ -4,6 +4,7 @@ class WelcomeController < ApplicationController
     @news = New.search(query).response["aggregations"]["news"]["buckets"]
     @day_news = New.search_contributors(query).response["aggregations"]
     @contributors = @day_news['uniq_contributors']['buckets'].sort_by{ |con| con['key'] }.map { |cont| cont['key']}
+    @contributors_pie = @day_news['uniq_contributors']['buckets'].map{ |cont| [cont['key'], cont['doc_count']]}
 
     @values = []
     @original = []
@@ -116,5 +117,6 @@ class WelcomeController < ApplicationController
     p @array
 
     gon.contributors = @array
+    gon.contributors_pie = @contributors_pie
   end
 end
